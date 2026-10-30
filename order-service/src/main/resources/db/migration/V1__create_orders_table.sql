@@ -1,0 +1,9 @@
+CREATE TABLE orders (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    order_number UUID NOT NULL UNIQUE,
+    sku_code VARCHAR(100) NOT NULL,
+    price NUMERIC(12, 2) NOT NULL,
+    quantity INTEGER NOT NULL CHECK (quantity > 0),
+    status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL
+);

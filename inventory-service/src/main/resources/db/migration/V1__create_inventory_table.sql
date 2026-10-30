@@ -1,0 +1,6 @@
+CREATE TABLE inventory
+(
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    sku_code VARCHAR(100) NOT NULL UNIQUE,
+    quantity INTEGER NOT NULL CHECK (quantity >= 0)
+);

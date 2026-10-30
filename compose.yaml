@@ -9,6 +9,36 @@ services:
       - '27017:27017'
     volumes:
       - 'mongodb_data:/data/db'
+    profiles:
+      - product
+
+  inventory-db:
+    image: 'postgres:18'
+    environment:
+      - POSTGRES_DB=inventory_db
+      - POSTGRES_USER=inventory_user
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'inventory_data:/var/lib/postgresql'
+    profiles:
+      - inventory
+
+  order-db:
+    image: 'postgres:18'
+    environment:
+      - POSTGRES_DB=order_db
+      - POSTGRES_USER=order_user
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - '5433:5432'
+    volumes:
+      - 'order_data:/var/lib/postgresql'
+    profiles:
+      - order
 
 volumes:
   mongodb_data:
+  inventory_data:
+  order_data:

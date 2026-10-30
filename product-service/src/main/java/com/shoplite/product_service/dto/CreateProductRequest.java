@@ -14,10 +14,12 @@ public record CreateProductRequest(
         String description,
 
         @NotBlank
+        @Size(max = 100)
         String skuCode,
 
         @NotNull
         @Positive
+        @Digits(integer = 10, fraction = 2)
         BigDecimal price
 ) {
 }
