@@ -8,7 +8,6 @@ import com.shoplite.product_service.model.Product;
 import com.shoplite.product_service.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +47,15 @@ public class ProductService {
             return ProductResponse.from(productOptional.get());
         } else {
             throw new ProductNotFoundException(id);
+        }
+    }
+    
+    public ProductResponse findBySkuCode(String sku) {
+        Optional<Product> productOptional = productRepository.findBySkuCode(sku);
+        if (productOptional.isPresent()) {
+            return ProductResponse.from(productOptional.get());
+        } else {
+            throw ProductNotFoundException.forSku(sku);
         }
     }
 

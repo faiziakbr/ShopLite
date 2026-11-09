@@ -40,4 +40,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problemDetail, headers, status, request);
     }
+
+    @ExceptionHandler(UnknownProductException.class)
+    public ProblemDetail handleUnknownProduct(UnknownProductException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
+        problemDetail.setTitle("Unknown Product");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(OutOfStockException.class)
+    public ProblemDetail handleOutOfStock(OutOfStockException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Out of stock");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ProblemDetail handleServiceUnavailable(ServiceUnavailableException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+        problemDetail.setTitle("Service Unavailable");
+        problemDetail.setDetail("Could not reach a required service. Please try again later.");
+        return problemDetail;
+    }
+
 }

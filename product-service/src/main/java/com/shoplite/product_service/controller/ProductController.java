@@ -40,4 +40,10 @@ public class ProductController {
         ProductResponse product = productService.findById(id);
         return ResponseEntity.ok(product);
     }
+
+    @GetMapping("/sku/{sku}")
+    public ResponseEntity<ProductResponse> getProductBySku(@PathVariable("sku") String sku) {
+        ProductResponse product = productService.findBySkuCode(sku);
+        return ResponseEntity.ok(product);
+    }
 }

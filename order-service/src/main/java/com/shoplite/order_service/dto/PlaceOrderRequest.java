@@ -11,11 +11,6 @@ public record PlaceOrderRequest(
 
         @NotNull
         @Positive
-        @Digits(integer = 10, fraction = 2)
-        BigDecimal price,
-
-        @NotNull
-        @Positive
         Integer quantity
 ) {
 }
