@@ -107,7 +107,7 @@ MicroServices_example/
 ### Phase 4 — Containerize (1 day)
 - Build an image per service with buildpacks; run the whole stack with `docker compose up`
 - Add Actuator; expose `/actuator/health/liveness` and `/readiness` (needed by Kubernetes next)
-- Config via environment variables (`SPRING_DATA_MONGODB_URI`, …)
+- Config via environment variables (`SPRING_MONGODB_URI`, …)
 - Structured JSON logging with Spring Boot's built-in support (`logging.structured.format.console`)
 - Inspect each image's SBOM; scan images with `trivy image` and fix anything critical
 - **Learn:** images vs containers, layered jars, 12-factor config, health endpoints, why JSON logs, supply-chain security basics

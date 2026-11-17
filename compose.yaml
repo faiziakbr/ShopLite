@@ -11,6 +11,12 @@ services:
       - 'mongodb_data:/data/db'
     profiles:
       - product
+      - apps
+    healthcheck:
+      test: [ "CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   inventory-db:
     image: 'postgres:18'
@@ -24,6 +30,12 @@ services:
       - 'inventory_data:/var/lib/postgresql'
     profiles:
       - inventory
+      - apps
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U inventory_user -d inventory_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   order-db:
     image: 'postgres:18'
@@ -37,6 +49,59 @@ services:
       - 'order_data:/var/lib/postgresql'
     profiles:
       - order
+      - apps
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U order_user -d order_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  product-service:
+    image: 'product-service:0.0.1-SNAPSHOT'
+    profiles:
+      - apps
+    ports:
+      - '8081:8081'
+    environment:
+      - 'LOGGING_STRUCTURED_FORMAT_CONSOLE=ecs'
+      - 'SPRING_MONGODB_URI=mongodb://root:secret@mongodb:27017/product-service?authSource=admin'
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  inventory-service:
+    image: 'inventory-service:0.0.1-SNAPSHOT'
+    profiles:
+      - apps
+    ports:
+      - '8082:8082'
+    environment:
+      - 'LOGGING_STRUCTURED_FORMAT_CONSOLE=ecs'
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://inventory-db:5432/inventory_db'
+      - 'SPRING_DATASOURCE_USERNAME=inventory_user'
+      - 'SPRING_DATASOURCE_PASSWORD=secret'
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+
+  order-service:
+    image: 'order-service:0.0.1-SNAPSHOT'
+    profiles:
+      - apps
+    ports:
+      - '8083:8083'
+    environment:
+      - 'LOGGING_STRUCTURED_FORMAT_CONSOLE=ecs'
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://order-db:5432/order_db'
+      - 'SPRING_DATASOURCE_USERNAME=order_user'
+      - 'SPRING_DATASOURCE_PASSWORD=secret'
+      - 'SPRING_HTTP_SERVICECLIENT_PRODUCT_BASEURL=http://product-service:8081'
+      - 'SPRING_HTTP_SERVICECLIENT_INVENTORY_BASEURL=http://inventory-service:8082'
+    depends_on:
+      order-db:
+        condition: service_healthy
+
+
 
 volumes:
   mongodb_data:
